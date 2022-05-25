@@ -44,15 +44,6 @@ def slice_dataset(data,date1,date2 = None,id = None):
       data = data[(data['id'].isin(id)) & (data['dat_trasporto'].isin(datalist))]
   return data
 
-def compute_quantile(data,q,metric):
-  quant = []
-  for s in range(1,15):
-    quant_ref = []
-    for ref in ['past_year','current_year']:
-      quant_ref.append(data[metric][(data['steps'] == s)&(data['reference'] == ref) ].quantile(q))
-    quant.append(quant_ref)
-  return pd.DataFrame(quant, index = np.arange(1,15), columns = ['past_year','current_year'])
-
 def last_year(data_now):
   ''' data_now: datatime '''
   if data_now == None:
@@ -62,13 +53,16 @@ def last_year(data_now):
 
 def data_preparation(curr_df,ref_df,map_col_curr,map_col_ref, date1,date2 = None, id_list = ID_LIST,metric = METRIC):
     current_melt = graph_dataset(curr_df, map_col_curr, metric = metric)
-    reference_melt = graph_dataset(ref_df, map_col_ref, metric = metric, baseline = BASELINE)
+    reference_melt = graph_dataset(ref_df, map_col_ref, metric = metric, baseline = BASELINE
+
+
+                                   )
     current_melt_id = slice_dataset(current_melt, date1,date2, id = id_list)
     reference_melt_id = slice_dataset(reference_melt, last_year(date1),last_year(date2),id = id_list)
 
     melt_id = pd.concat([reference_melt_id, current_melt_id])
-    melt_id['reference'] = np.append(np.ones(len(reference_melt_id)), np.zeros(len(current_melt_id)))
-    melt_id['reference'] = melt_id['reference'].map({1: 'reference', 0: 'current_year'})
+    melt_id['period'] = np.append(np.ones(len(reference_melt_id)), np.zeros(len(current_melt_id)))
+    melt_id['period'] = melt_id['period'].map({1: 'reference', 0: 'current_year'})
     return melt_id,current_melt_id, reference_melt_id
 
 

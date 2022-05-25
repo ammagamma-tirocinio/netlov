@@ -1,7 +1,15 @@
 import streamlit as st
 import plotly.graph_objects as go
-from dataset_preparation import compute_quantile
 from config import *
+
+def compute_quantile(melt_id,q,metric = METRIC):
+  quant = []
+  for s in range(1,15):
+    quant_ref = []
+    for ref in ['reference','current_year']:
+      quant_ref.append(melt_id[metric][(melt_id['steps'] == s)&(melt_id['period'] == ref) ].quantile(q))
+    quant.append(quant_ref)
+  return pd.DataFrame(quant, index = np.arange(1,15), columns = ['reference','current'])
 
 def quantile_line(melt_id,fig):
     y_pos = [0, 0.2]
@@ -20,7 +28,7 @@ def grafico1(current_melt_id, reference_melt_id,melt_id):
     y_pos = [0, 0.2]
     plot = [reference_melt_id,current_melt_id]
     labels = ['reference','current']
-    colors = [blu_ammagamma + str(alpha)+')', yellow+str(alpha)+')']
+    colors = [blu_ammagamma,yellow]
     style = ['circle', 'x']
 
     layout = go.Layout(title='MAPE for each gruop of prediction: period ' +
@@ -49,7 +57,7 @@ def grafico2(current_melt_id, reference_melt_id):
     style = ['circle','x']
     plot = [reference_melt_id, current_melt_id]
     labels = ['reference','current']
-    colors = [blu_ammagamma + '1)', yellow +'1)']
+    colors = [blu_ammagamma, yellow]
 
     layout = go.Layout(title='MAPE for each gruop of prediction: period ' +
                              str(plot[1]['dat_trasporto'].iloc[0].strftime("%Y-%m-%d")),
@@ -76,7 +84,7 @@ def grafico3(current_melt_id, reference_melt_id,melt_id):
     plot = [reference_melt_id, current_melt_id]
     y_pos = [-0.05, 0.05]
     labels = ['reference', 'current']
-    colors = [blu_ammagamma + str(alpha) + ')', yellow + str(alpha) + ')']
+    colors = [blu_ammagamma, yellow]
     side = ['negative', 'positive']
     style = ['circle', 'x']
 
@@ -93,9 +101,9 @@ def grafico3(current_melt_id, reference_melt_id,melt_id):
                        height=500)
     fig = go.Figure(layout=layout)
 
-    for i, ref in enumerate(['past_year', 'current_year']):
-        fig.add_trace(go.Violin(x=melt_id['steps'][melt_id['reference'] == ref] + y_pos[i],
-                                y=melt_id[METRIC][melt_id['reference'] == ref],
+    for i, ref in enumerate(['reference', 'current_year']):
+        fig.add_trace(go.Violin(x=melt_id['steps'][melt_id['period'] == ref] + y_pos[i],
+                                y=melt_id[METRIC][melt_id['period'] == ref],
                                 legendgroup=labels[i], scalegroup=labels[i], name=labels[i],
                                 side=side[i],
                                 fillcolor=colors[i] + '0.8)',
