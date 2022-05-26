@@ -51,12 +51,9 @@ def last_year(data_now):
   delta = pd.Timedelta(days=365)
   return data_now-delta
 
-def data_preparation(curr_df,ref_df,map_col_curr,map_col_ref, date1,date2 = None, id_list = ID_LIST,metric = METRIC):
+def data_preparation(curr_df,ref_df,map_col_curr,map_col_ref, date1,date2 = None, id_list = ID_LIST,metric = METRIC, baseline = BASELINE):
     current_melt = graph_dataset(curr_df, map_col_curr, metric = metric)
-    reference_melt = graph_dataset(ref_df, map_col_ref, metric = metric, baseline = BASELINE
-
-
-                                   )
+    reference_melt = graph_dataset(ref_df, map_col_ref, metric = metric, baseline = baseline)
     current_melt_id = slice_dataset(current_melt, date1,date2, id = id_list)
     reference_melt_id = slice_dataset(reference_melt, last_year(date1),last_year(date2),id = id_list)
 

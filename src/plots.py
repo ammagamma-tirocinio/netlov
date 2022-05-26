@@ -1,6 +1,6 @@
-import streamlit as st
 import plotly.graph_objects as go
 from config import *
+
 
 def compute_quantile(melt_id,q,metric = METRIC):
   quant = []
@@ -11,6 +11,7 @@ def compute_quantile(melt_id,q,metric = METRIC):
     quant.append(quant_ref)
   return pd.DataFrame(quant, index = np.arange(1,15), columns = ['reference','current'])
 
+@st.cache(allow_output_mutation=True)
 def quantile_line(melt_id,fig):
     y_pos = [0, 0.2]
     colors_line = [red + '1)', green + '1)']
@@ -24,6 +25,7 @@ def quantile_line(melt_id,fig):
                                      mode='lines+markers', line={'color': colors_line[el], 'width': 1}))
     return fig
 
+@st.cache(allow_output_mutation=True)
 def grafico1(current_melt_id, reference_melt_id,melt_id):
     y_pos = [0, 0.2]
     plot = [reference_melt_id,current_melt_id]
@@ -50,8 +52,9 @@ def grafico1(current_melt_id, reference_melt_id,melt_id):
                 'line': dict(color=colors[el] + '1)', width=1)}, ))
     fig.update_layout(xaxis_showgrid=False, xaxis_zeroline=False)
     fig = quantile_line(melt_id, fig)
-    st.plotly_chart(fig)
+    return fig
 
+@st.cache(allow_output_mutation=True)
 def grafico2(current_melt_id, reference_melt_id):
     y_pos = [-0.17, 0.17]
     style = ['circle','x']
@@ -78,8 +81,10 @@ def grafico2(current_melt_id, reference_melt_id):
                 'line': dict(color= colors[el]+ '1)',width=1)} ))
 
     fig.update_layout(xaxis_showgrid=False, xaxis_zeroline=False)
-    st.plotly_chart(fig)
+    return fig
 
+
+@st.cache(allow_output_mutation=True)
 def grafico3(current_melt_id, reference_melt_id,melt_id):
     plot = [reference_melt_id, current_melt_id]
     y_pos = [-0.05, 0.05]
@@ -93,7 +98,7 @@ def grafico3(current_melt_id, reference_melt_id,melt_id):
                              str(plot[1]['dat_trasporto'].iloc[0].strftime("%Y-%m-%d")),
                        xaxis=dict(title='Days',
                                   range=[0, 15]),
-                       yaxis=dict(title='MAPE',
+                       yaxis=dict(title= 'MAPE',
                                   range=[0, 400]),
                        autosize=False,
 
@@ -115,5 +120,7 @@ def grafico3(current_melt_id, reference_melt_id,melt_id):
                                         'line': dict(color=colors[i] + '1)', width=1)}))
     fig.update_traces(meanline_visible=True, jitter=0, scalemode='count')
     fig = quantile_line(melt_id, fig)
-    st.plotly_chart(fig)
+    return fig
+
+
 
