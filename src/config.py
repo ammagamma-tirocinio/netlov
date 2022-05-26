@@ -24,6 +24,10 @@ PRED_DIR = os.path.join(DATA_DIR,'prediction/',VERSION)
 TRAIN_PRED = os.path.join(PRED_DIR,'train',PRED_DATE)
 TEST_PRED = os.path.join(PRED_DIR,'test',PRED_DATE)
 
+#nunnyml settings
+
+feature_columns = ['past_val_qta_norm_cy_-1','past_tot_ordini_norm_-1', 'flg_su_ordine','flg_piattaforma']
+info_columns = ['dat_trasporto','id','partition', 'y_pred', 'y_true', 'predicted_probability']
 
 # graph settings
 blu_ammagamma = 'rgba(0,71,92,'

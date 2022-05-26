@@ -1,0 +1,4 @@
+outs:
+- md5: 2a088dd87b60f34e78a723998055e15c
+  size: 2147567470
+  path: prediction.zip

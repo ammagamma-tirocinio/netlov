@@ -122,5 +122,11 @@ def grafico3(current_melt_id, reference_melt_id,melt_id):
     fig = quantile_line(melt_id, fig)
     return fig
 
+def univariate_plot(ranker,univariate_results, metadata):
+
+    for feature in metadata.features:
+        fig = univariate_results.plot(kind='feature_drift', metric='p_value', feature_label=feature.label)
+
+
 
 
